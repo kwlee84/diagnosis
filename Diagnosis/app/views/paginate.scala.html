@@ -1,0 +1,59 @@
+@(page:Int, pageLength:Int, collectionLength:Int, route:Int => Call, searchKey: util.SearchKey, bound:Int = 10)
+@lowbound() = @{
+    ((page.toDouble / bound).floor * bound) toInt
+}
+@highbound() = @{
+    if ((lowbound() + bound) * pageLength >= collectionLength)
+        collectionLength / pageLength + 1
+    else
+        lowbound() + bound
+}
+
+    <div class="paginate">
+            @if(page == 1){
+                <!-- disabled --><a href="javascript:;" class="dir prev">Previous</a>
+            } else {
+            	@if(page == 2) {
+            		<a href="@route(page-1)?@searchKey.getSerializedKeys">Previous</a>
+            	} else {
+                <a href="@route(page-1)&@searchKey.getSerializedKeys">Previous</a>
+				}
+            }
+
+            @if(page < bound) {
+                <!-- disabled --><a href="javascript:;" class="dir prev">&laquo;</a>
+            } else {
+                @if(lowbound()-bound <= 0) {
+                    <a href="@route(1)?@searchKey.getSerializedKeys">&laquo;</a>
+                } else {
+                    <a href="@route(lowbound()-bound)&@searchKey.getSerializedKeys">&laquo;</a>
+                }
+            }
+
+            @for(i <- lowbound().max(1) until page) {
+            	@if(i==1) {
+            	<a href="@route(i)?@searchKey.getSerializedKeys">@i</a>
+            	} else {
+                <a href="@route(i)&@searchKey.getSerializedKeys">@i</a>
+                }
+            }
+
+            <strong>@page</strong>
+
+            @for(i <- page+1 to highbound()) {
+                <a href="@route(i)&@searchKey.getSerializedKeys">@i</a>
+            }
+
+            @if(highbound() * pageLength <= collectionLength && highbound() > page && page * pageLength != collectionLength) {
+                <a href="@route(highbound())&@searchKey.getSerializedKeys">&raquo;</a>
+            } else {
+                <!-- disabled --><a href="javascript:;" class="dir next">&raquo;</a></li>
+            }
+
+            @if(page < highbound()) {
+                <a href="@route(page+1)&@searchKey.getSerializedKeys">Next</a>
+            } else {
+                <!-- disabled --><a href="javascript:;" class="dir next">Next</a>
+
+            }
+    </div>

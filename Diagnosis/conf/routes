@@ -1,0 +1,46 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                                          controllers.Assets.versioned(path="/public", file: Asset)
+                                                               
+GET     /login						                           controllers.LoginApp.loginForm()
+POST    /login						                           controllers.LoginApp.login()
+                                                               
+GET     /logout						                           controllers.LoginApp.logout()
+                                                               
+GET     /attachedfile/:id			                           controllers.AttachedFileApp.download(id)
+                                                               
+GET     /plans                                                 controllers.PlanApp.index()
+POST    /plan                                                  controllers.PlanApp.register()
+POST    /plan/delete                                           controllers.PlanApp.remove()
+                                                               
+GET     /plan/:id/submit                                       controllers.SubmitApp.registerForm(id)
+POST    /submit                                                controllers.SubmitApp.register()
+POST    /submit/edit                                           controllers.SubmitApp.edit()
+                                                               
+GET     /plan/:id/management                                   controllers.ManagementApp.index(id, page: Integer?=1)
+GET     /plan/:id/management/download                          controllers.ManagementApp.download(id: String)
+
+GET     /employees                                             controllers.EmployeeApp.index(page: Integer?=1)
+POST    /employee/find                                          controllers.EmployeeApp.findAsJson()
+POST    /employee                                              controllers.EmployeeApp.create()
+POST    /employee/excel                                        controllers.EmployeeApp.createByExcel()
+POST    /employee/delete                                       controllers.EmployeeApp.remove()
+POST    /employee/deleteall                                    controllers.EmployeeApp.removeAll()
+GET     /employee/template                                     controllers.EmployeeApp.downloadTemplate()
+
+#newForm 		get		/account/new
+#new			post	/account
+
+#list			get		/account
+#one			get		/account/:id
+
+#update			post	/account/edit
+#updateForm		get		/account/:id/edit
+
+#delete			post	/account/delete

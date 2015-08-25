@@ -1,0 +1,89 @@
+@(diagnosisForm: Form[Diagnosis], plan: Plan)
+
+@import helper._
+
+@main("엑셀 업로드"){
+	<div class="admCwrap">
+	<div class="cntHeader">
+    	<h3 class="tTit">@plan.getName</h3>
+    </div>
+    <div class="atit"><h3>엑셀 업로드</h3></div>
+    @form(action=routes.SubmitApp.register(), 'id->"register_form", 'enctype -> "multipart/form-data") {
+	    <table summary="서비스정보" class="atform01">
+	        <colgroup>
+	            <col width="120">
+	            <col width="*">
+	        </colgroup>
+	        <tbody>        
+	        <tr>
+	            <th>사번</th>
+	            <td>
+	                <input type="text" size="30" class="txt" id="companyId" name="companyId">
+	            </td>
+	        </tr>
+	        
+	        <tr>
+	            <th>엑셀파일</th>
+	            <td><input type="file" name="excelFile"/></td>
+	        </tr>                 
+	        </tbody>
+	    </table>
+	    <input type="hidden" name="planId" value="@plan.getId">
+    }
+    <div class="btnArea">
+        <a class="t27" href="javascript:register();"><strong>제출</strong></a>
+    </div>
+    </div>
+    
+	<script type="text/javascript">
+		function register() {
+			if(!checkValidate()) {
+				return;
+			}
+			var companyId = $('#companyId').val();
+			$.ajax({
+				  url: '@routes.EmployeeApp.findAsJson()',
+				  type : 'post',
+				  data: {
+					  companyId : companyId,
+					  planId : @plan.getId
+				  },
+				  dataType : 'Json',
+			}).done(function(data) {
+				if(data.diagnosis != null) {
+					if(confirm('이미 제출하셨습니다. 덮어쓰겠습니까?')){
+						$('#register_form').attr('action', '@routes.SubmitApp.edit()');
+						$('#register_form').submit();
+					}
+					return;
+				}
+				$('#register_form').submit();
+				
+			}).fail(function(){
+				alert('등록된 직원이 아닙니다.');
+			});
+			
+		}
+		
+		function checkValidate() {
+			if($('#companyId').val() == '') {
+				alert('사번을 입력하세요.');
+				return false;
+			}
+			if($('input[name=excelFile]').val() == '') {
+				alert('엑셀파일을 첨부하세요.');
+				return false;
+			}
+			return true;
+		}
+		
+		$(function() {
+			$('#register_form').keypress(function(e) {
+				if(e.which == 13) {
+					register();
+					return false;
+				}
+			});
+		});
+	</script>
+}

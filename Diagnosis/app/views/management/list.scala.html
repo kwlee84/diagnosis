@@ -1,0 +1,155 @@
+@(employees: com.avaje.ebean.PagedList[Employee], searchKey: util.SearchKey, plans: List[Plan], planId: String, total: Integer, submitted: Integer)
+
+@import helper._
+
+@pageNumber() = @{
+	employees.getPageIndex+1
+}
+
+@unsubmitted() = @{
+	total - submitted
+}
+
+@main("자가진단서 제출현황") {
+	<div class="admCwrap">
+	<div class="cntHeader">
+    	<h3 class="tTit">자가진단서 제출현황</h3>
+    </div>
+    
+    <div class="tOption tHead">
+        @form(action=routes.ManagementApp.index(planId), 'method->"get", 'id->"search_form") {
+            <div class="block">
+    			<select id="plan" name="#">
+    			    @for(plan <- plans) {
+						<option value="@plan.getId" @if(planId==plan.getId){selected}>@plan.getName</option>
+					}
+    			</select><br><br>
+    			<span class="lbl">사번: </span>
+    			<input type="text" size="12"name="companyId" value="@searchKey.get("companyId")">
+    			<span class="lbl">팀: </span>
+				<input type="text" name="team" value="@searchKey.get("team")">
+				<span class="lbl">이름: </span>
+				<input type="text" size="12" name="name" value="@searchKey.get("name")">
+				<span class="lbl">제출여부: </span>
+				<select id="submitted" name="submitted">
+					<option value="">전체</option>
+					<option value="submitted" @if("submitted".equals(searchKey.get("submitted"))){selected}>제출</option>
+					<option value="unsubmitted" @if("unsubmitted".equals(searchKey.get("submitted"))){selected}>미제출</option>
+				</select>
+    			<a href="javascript:search();" class="t21"><span>조회</span></a>		
+    		</div>
+    		<input type="hidden" id="sort_dateCreated" name="sort_dateCreated" value="@searchKey.getSortField.get("sort_dateCreated")">
+		}
+	</div> 
+	
+	<div class="tbl03">
+        <table>
+        	<colgroup>
+        		<col width="150">
+        		<col width="*">
+        	</colgroup>
+        	<tbody>    	
+        	<tr>    		
+        		<th>전체</th>
+        		<td>@total</td>    		
+        	</tr>
+        	<tr>    		
+        		<th>미제출</th>
+        		<td>@unsubmitted</td>    		
+        	</tr>
+        	<tr>    		
+        		<th>제출</th>
+        		<td>@submitted</td>    		
+        	</tr> 	  	
+        	</tbody>
+        </table>
+    </div><br>
+    
+    @if(submitted != 0) {
+    <div class="tbbtn">        
+        <div class="btns">
+            <a class="t28" href="@routes.ManagementApp.download(planId)"><span>전체파일다운</span></a>
+        </div>        
+    </div>
+    }
+    
+    <div class="tbl01">
+	<table>
+		<colgroup>
+    		<col width="120" />
+    		<col width="*" />
+    		<col width="*" />
+    		<col width="170" />
+    		<col width="170" />
+    	</colgroup>
+    	<thead>
+    	<tr>
+    		<th class="first">사번</th>
+			<th>팀</th>
+    		<th>이름</th>
+    		<th>제출여부</th>
+    		<th><span style="cursor:pointer;" onclick="sortDatedCreated();">제출일시 
+    			@if(searchKey.getSortField.get("sort_dateCreated") != null && searchKey.getSortField.get("sort_dateCreated")){▼}
+    			@if(searchKey.getSortField.get("sort_dateCreated") != null && !searchKey.getSortField.get("sort_dateCreated")){▲}
+    			</span>
+    		</th>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	@for(employee <- employees.getList) {
+    	<tr>
+			<td class="first">@employee.getCompanyId</td>
+			<td>@employee.getTeam</td>
+			<td>@employee.getName</td>
+			<td>
+				@if(employee.getDiagnosis == null || employee.getDiagnosis.getExcelFile == null) {
+					<img src="@routes.Assets.versioned("images/icon_filenone.png")" width="18" height="18" alt="파일제출">
+				} else {
+					<a href="@routes.AttachedFileApp.download(employee.getDiagnosis.getExcelFile.getId)"><img src="@routes.Assets.versioned("images/icon_file.png")" width="18" height="18" alt="파일제출"></a>
+				}
+			</td>
+			<td>
+				@if(employee.getDiagnosis != null) {
+					@employee.getDiagnosis.getDateCreated.format("yyyy-MM-dd a hh:mm:ss ")
+				}
+			</td>
+		</tr>
+    	}
+    	</tbody>
+	</table>
+	</div>
+	@paginate(pageNumber, 20, employees.getTotalRowCount, routes.ManagementApp.index(planId, _), searchKey)
+	
+	
+	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#plan').change(function() {
+				var planId = $('#plan').val();
+				location.href = '/plan/' + planId + '/management';
+			});
+			
+		});
+		
+		function search() {
+			$('#search_form').submit();
+		}
+		
+		function sortDatedCreated() {
+			var $input = $('input[name=sort_dateCreated]');
+			var before = $input.val();
+			if(before == '') {
+				$input.val('true');
+			} else if(before == 'true') {
+				$input.val('false');
+			} else {
+				$input.val('');
+			}
+			
+			$('#search_form').submit();
+		}
+	</script>
+	
+	
+}

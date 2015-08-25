@@ -1,0 +1,180 @@
+@(employees: com.avaje.ebean.PagedList[Employee], searchKey: util.SearchKey)
+
+@import helper._
+
+@pageNumber() = @{
+	employees.getPageIndex+1
+}
+
+@main("직원관리") {
+	<div class="admCwrap">        
+
+    <div class="cntHeader">
+    	<h3 class="tTit">직원관리</h3>
+    </div>
+	
+    <div class="atit"><h3>직원목록</h3></div>
+	<div class="tOption tHead">
+        @form(action=routes.EmployeeApp.index(), 'method->"get", 'id->"search_form") {
+            <div class="block">
+                <span class="lbl">사번: </span>
+    			<input type="text" size="12"name="companyId" value="@searchKey.get("companyId")">
+    			<span class="lbl">팀: </span>
+				<input type="text" name="team" value="@searchKey.get("team")">
+				<span class="lbl">이름: </span>
+				<input type="text" size="12" name="name" value="@searchKey.get("name")">
+				<span class="lbl">이메일: </span>
+				<input type="text" name="email" value="@searchKey.get("email")">			    			
+    			<a href="javascript:search();" class="t21"><span>조회</span></a>
+    		</div>
+		}
+	</div>
+	@if(employees.getList.size > 0) {
+		@form(action=routes.EmployeeApp.removeAll(), 'method->"post", 'id->"remove_all_form") {
+		}
+	    <div class="tbbtn">        
+	        <div class="btns">
+	            <a class="t28" href="javascript:removeAll();"><span>전체삭제</span></a>
+	        </div>        
+	    </div>
+    }
+	<div class="tbl01">
+    <table>
+    	<colgroup>
+    		<col width="150" />
+    		<col width="*" />
+    		<col width="150" />
+    		<col width="*" />
+    		<col width="*" />
+    	</colgroup>
+    	<thead>
+    	<tr>
+    		<th class="first">사번</th>
+			<th>팀</th>
+			<th>이름</th>
+			<th>이메일</th>
+			<th class="last"></th>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	<tr>
+    		@for(employee <- employees.getList) {	
+				<tr>
+					<td class="first">@employee.getCompanyId</td>
+					<td>@employee.getTeam</td>
+					<td>@employee.getName</td>
+					<td>@employee.getEmail</td>
+					<td class=""><a href="javascript:removeEmployee('@employee.getId');"><img src="@routes.Assets.versioned("images/icon_del.png")" width="18" height="18" alt="삭제"></a></td>
+				</tr>
+			}
+    	</tr>
+    	</tbody>
+    </table>
+    </div>
+	
+	@paginate(pageNumber, 20, employees.getTotalRowCount, routes.EmployeeApp.index(_), searchKey)
+	
+	@form(action=routes.EmployeeApp.createByExcel(), 'id->"register_form", 'enctype -> "multipart/form-data" ) {
+		<div class="atit"><h3>직원등록</h3></div>
+	    <table summary="서비스정보" class="atform01">
+	        <colgroup>
+	            <col width="120">
+	            <col width="*">
+	        </colgroup>
+	        <tbody>        
+	        <tr>
+	            <th>개별등록</th>
+	            <td>
+	            	사번: <input type="text" id="companyId" name="companyId" size="12">
+	            	팀: <input type="text" id="team" name="team">
+	            	이름: <input type="text" id="name" name="name" size="12">
+	            	이메일: <input type="text" id="email" name="email" size="24">
+	                <a class="t21" href="javascript:register();"><span>등록</span></a>
+	            </td>
+	        </tr>                 
+	        <tr>
+	            <th>엑셀등록</th>
+	            <td>
+	                <input type="file" name="excelFile">
+	                <a class="t21" href="javascript:registerByExcel();"><span>등록</span></a>
+	                <a class="t21" href="javascript:downloadTemplate();"><span>템플릿다운</span></a>
+	            </td>
+	        </tr>                 
+	        </tbody>
+	    </table>
+	}
+	<br><br>
+	
+	@form(action=routes.EmployeeApp.remove(), 'method -> "post", 'id -> "removeForm") {
+		<input type="hidden" id="del_employee" name="id"/>
+	}
+	
+	</div>
+    
+	<script type="text/javascript">
+		function register() {
+			if(!checkValidateIdv()) {
+				return;
+			}
+			$('#register_form').attr('action', '@routes.EmployeeApp.create()');
+			$('#register_form').submit();
+		}
+		
+		function registerByExcel() {
+			if(!checkValidateExl()) {
+				return;
+			}
+			$('#register_form').attr('action', '@routes.EmployeeApp.createByExcel()');
+			$('#register_form').submit();
+		}
+		
+		function checkValidateIdv() {
+			if($('#companyId').val().trim() == '') {
+				alert('사번을 입력하세요.');
+				return false;
+			}
+			if($('#name').val().trim() == '') {
+				alert('이름을 입력하세요.');
+				return false;
+			}
+			if($('#email').val().trim() == '') {
+				alert('이메일을 입력하세요.');
+				return false;
+			}
+			return true;
+		}
+		
+		function checkValidateExl() {
+			if($('input[name=excelFile]').val() == '') {
+				alert('엑셀파일을 첨부하세요.');
+				return false;
+			}
+			return true;
+		}
+		
+		function search() {
+			$('#search_form').submit();
+		}
+		
+		function removeEmployee(id) {
+			if(!confirm('직원을 삭제할까요?')) {
+				return;
+			}
+			$('#del_employee').val(id);
+			$('#removeForm').submit();
+		}
+		
+		function removeAll() {
+			if(!confirm('직원을 전원 삭제할까요?')) {
+				return;
+			}
+			$('#remove_all_form').submit();
+		}
+		
+		function downloadTemplate() {
+			location.href='@routes.EmployeeApp.downloadTemplate()';
+		}
+	</script>
+	
+	
+}

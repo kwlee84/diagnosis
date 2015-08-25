@@ -1,0 +1,96 @@
+@(plans: List[Plan], planForm: Form[Plan])
+
+@import helper._
+
+@main("기획관리") {
+	<div class="admCwrap">
+	<div class="cntHeader">
+    	<h3 class="tTit">기획관리</h3>
+    </div>
+    
+    <div class="tbl01">
+    	<div class="atit"><h3>기획목록</h3></div>
+        <table>
+        	<colgroup>
+        		<col width="*">
+        		<col width="*">
+        		<col width="*">
+        	</colgroup>
+        	<thead>
+		    	<tr>
+		    		<th class="first">기획</th>
+		    		<th>제출URL</th>
+		    		<th class="last"></th>
+		    	</tr>
+		    </thead>
+        	<tbody>
+	        	@for(plan <- plans) {
+					<tr>
+						<td class="first"><a href="@routes.ManagementApp.index(plan.getId)">@plan.getName</a></td>
+						<td>http://@request.host@routes.SubmitApp.registerForm(plan.getId)</td>
+						<td><a href="javascript:removePlan('@plan.getId');"><img src="@routes.Assets.versioned("images/icon_del.png")" width="18" height="18" alt="삭제"></td>
+					</tr>
+				}	
+        	</tbody>
+        </table>
+    </div>
+    
+    <div class="atit"><h3>기획등록</h3></div>
+    @form(action=routes.PlanApp.register(), 'method -> "post", 'id->"register_form") {
+    <table summary="서비스정보" class="atform01">
+        <colgroup>
+            <col width="120">
+            <col width="*">
+        </colgroup>
+        <tbody>        
+        <tr>
+            <th>기획명</th>
+            <td>
+                <input type="text" size="50" class="txt" id="name" name="name">
+                <a class="t21" href="javascript:register();"><span>등록</span></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+	}
+	
+	@form(action=routes.PlanApp.remove(), 'method -> "post", 'id -> "removeForm") {
+		<input type="hidden" id="del_plan" name="id"/>
+	}
+	</div>
+	<script type="text/javascript">
+		function register() {
+			if(!checkValidate()) {
+				alert('기획명을 입력하세요.');
+				return;
+			}
+			$('#register_form').submit();
+		}
+		
+		function removePlan(id) {
+			if(!confirm('기획을 삭제할까요?')) {
+				return;
+			}
+			$('#del_plan').val(id);
+			$('#removeForm').submit();
+		}
+		
+		function checkValidate() {
+			if($('#name').val().trim() == '') {
+				return false;
+			}
+			return true;
+		}
+		
+		$(function() {
+			$('#register_form').keypress(function(e) {
+				if(e.which == 13) {
+					register();
+					return false;
+				}
+			});
+		});
+	</script>
+	
+	
+}

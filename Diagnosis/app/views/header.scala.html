@@ -1,0 +1,22 @@
+<div class="admHead">
+    <div class="nob_gnb_top">
+        <div class="accl">
+            <ul class="nav">
+            <li class="branchmgnt"><a href="@routes.PlanApp.index()">기획관리</a></li>
+            <li class="branchmgnt"><a href="@routes.EmployeeApp.index(1)">직원관리</a></li>
+            </ul>
+        </div>
+
+		@if(session.get("email")!=null) {
+        <div class="accr">            
+            <ul class="nav">                
+                <li>@session.get("email")</li>
+                <li class="branchmgnt"><a href="@routes.LoginApp.logout()">로그아웃</a></li>
+            </ul>
+        </div>
+        }
+    </div>
+    
+    
+    
+</div>
