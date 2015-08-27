@@ -78,4 +78,20 @@ public class ManagementServiceImpl implements ManagementService {
 			throw new DiagnosisException("Failed to create zip file.");
 		}
 	}
+
+	@Override
+	public List<Employee> findEmployeeWithDiagnosis(String planId, SearchKey searchKey) {
+		//
+		List<Employee> employees = employeeStore.retrieve(planId, searchKey);
+		
+		if(employees != null) {
+			for (Employee employee : employees) {
+				if(employee != null) {
+					Diagnosis diagnosis = diagnosisStore.retrieveByCompanyId(planId, employee.getCompanyId());
+					employee.setDiagnosis(diagnosis);
+				}
+			}
+		}
+		return employees;
+	}
 }

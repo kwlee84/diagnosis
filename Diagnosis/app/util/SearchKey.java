@@ -18,12 +18,19 @@ public class SearchKey extends HashMap<String, String> {
 	
 	public String getSerializedKeys() throws UnsupportedEncodingException {
 		String result = "";
-		Set<String> keys  = this.keySet(); 
+		Set<String> keys = this.keySet(); 
 		Iterator<String> itr = keys.iterator();
-
 		while(itr.hasNext()){
 			String key = (String) itr.next();
 			String value = URLEncoder.encode(this.get(key), "UTF-8");
+			if(value == null) continue;
+			result += (key + "=" + value + "&");
+		}
+		keys = sortField.keySet(); 
+		itr = keys.iterator();
+		while(itr.hasNext()){
+			String key = (String) itr.next();
+			String value = sortField.get(key).toString();
 			if(value == null) continue;
 			result += (key + "=" + value + "&");
 		}

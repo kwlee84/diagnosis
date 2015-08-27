@@ -3,6 +3,7 @@ package services.impl;
 import java.io.File;
 import java.util.List;
 
+import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee findByCompanyId(String companyId, String planId) {
 		//
 		Employee employee = employeeStore.retrieveByCompanyId(companyId);
-		if(employee != null) {
+		if(!StringUtils.isNullOrEmpty(planId) && employee != null) {
 			employee.setDiagnosis(diagnosisStore.retrieveByCompanyId(planId, companyId));
 		}
 		

@@ -19,4 +19,5 @@ public interface EmployeeStore {
 	void create(List<Employee> employees);
 	void delete(String id);
 	void create(Employee employee);
+	List<Employee> retrieve(String planId, SearchKey searchKey);
 }

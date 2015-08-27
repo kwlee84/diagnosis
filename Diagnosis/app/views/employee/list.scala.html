@@ -116,8 +116,20 @@
 			if(!checkValidateIdv()) {
 				return;
 			}
-			$('#register_form').attr('action', '@routes.EmployeeApp.create()');
-			$('#register_form').submit();
+			var companyId = $('#companyId').val();
+			$.ajax({
+				  url: '@routes.EmployeeApp.findAsJson()',
+				  type : 'post',
+				  data: {
+					  companyId : companyId
+				  },
+				  dataType : 'Json'
+			}).done(function(data) {
+				alert('이미 등록된 사번입니다.');
+			}).fail(function(){
+				$('#register_form').attr('action', '@routes.EmployeeApp.create()');
+				$('#register_form').submit();
+			});
 		}
 		
 		function registerByExcel() {
