@@ -49,7 +49,7 @@ public class ExcelUtil {
 		//
 		String input = FileUtil.rootPath + File.separatorChar + "conf" + File.separatorChar + 
 				"jxls" + File.separatorChar + "template" + File.separatorChar + "template_management.xlsx";
-		String output = "target/result_management.xlsx";
+		String output = FileUtil.rootPath + File.separatorChar + "target/result_management.xlsx";
 		
 	    try(InputStream is = new BufferedInputStream(new FileInputStream(input))) {
 	        try (OutputStream os = new FileOutputStream(output)) {
