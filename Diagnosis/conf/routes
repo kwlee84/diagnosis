@@ -20,11 +20,14 @@ POST    /plan                                                  controllers.PlanA
 POST    /plan/delete                                           controllers.PlanApp.remove()
                                                                
 GET     /plan/:id/submit                                       controllers.SubmitApp.registerForm(id)
+GET     /submit/result                                         controllers.SubmitApp.result()
 POST    /submit                                                controllers.SubmitApp.register()
 POST    /submit/edit                                           controllers.SubmitApp.edit()
                                                                
 GET     /plan/:id/management                                   controllers.ManagementApp.index(id, page: Integer?=1)
 GET     /plan/:id/management/download                          controllers.ManagementApp.download(id: String)
+GET     /plan/:id/management/excel                             controllers.ManagementApp.downloadExcelFile(id)
+
 
 GET     /employees                                             controllers.EmployeeApp.index(page: Integer?=1)
 POST    /employee/find                                          controllers.EmployeeApp.findAsJson()
