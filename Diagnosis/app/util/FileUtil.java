@@ -19,6 +19,7 @@ import play.Play;
 
 public class FileUtil {
 	//
+	public static final String rootPath = Play.application().path().getPath() + File.separatorChar + "..";
 	private static final String uploadPath = Play.application().configuration().getString("fileUploadPath") + File.separatorChar;
 	
 	public static File saveFile(File fromFile) {

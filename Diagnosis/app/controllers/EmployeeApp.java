@@ -107,8 +107,7 @@ public class EmployeeApp extends Controller {
     
     @Authenticated(Secured.class)
     public Result downloadTemplate() {
-    	String rootPath = Play.application().path().getPath() + File.separatorChar + "..";
-    	String templatePath = rootPath + File.separatorChar + "conf" + File.separatorChar + "jxls" + File.separatorChar + "template" +File.separatorChar + "template.xlsx";
+    	String templatePath = FileUtil.rootPath + File.separatorChar + "conf" + File.separatorChar + "jxls" + File.separatorChar + "template" +File.separatorChar + "template.xlsx";
     	return ok(new File(templatePath));
     }
 }

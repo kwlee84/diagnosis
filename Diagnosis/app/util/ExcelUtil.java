@@ -17,7 +17,6 @@ import org.jxls.reader.XLSReadStatus;
 import org.jxls.reader.XLSReader;
 import org.jxls.util.JxlsHelper;
 
-import play.Play;
 import exception.DiagnosisException;
 import models.Employee;
 
@@ -26,7 +25,7 @@ public class ExcelUtil {
 	public static List<Employee> convertToEmployees(File file) {
 		//
 		List<Employee> employees = new ArrayList<Employee>();
-		String xml = "conf" + File.separatorChar + 
+		String xml = FileUtil.rootPath + File.separatorChar + "conf" + File.separatorChar + 
 				"jxls" + File.separatorChar + "config"+ File.separatorChar+ "employeeconfig.xml";
 		try {
 			InputStream inputXML = new BufferedInputStream(new FileInputStream(xml));
@@ -48,7 +47,7 @@ public class ExcelUtil {
 
 	public static File employeesToExcel(List<Employee> employees) {
 		//
-		String input = "conf" + File.separatorChar + 
+		String input = FileUtil.rootPath + File.separatorChar + "conf" + File.separatorChar + 
 				"jxls" + File.separatorChar + "template" + File.separatorChar + "template_management.xlsx";
 		String output = "target/result_management.xlsx";
 		
