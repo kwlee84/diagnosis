@@ -5,11 +5,14 @@ import java.beans.Encoder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import org.apache.http.client.utils.DateUtils;
 
 import com.avaje.ebean.PagedList;
 
@@ -83,7 +86,7 @@ public class ManagementApp extends Controller {
     	List<Employee> employees = managementService.findEmployeeWithDiagnosis(planId, searchKey);
     	
     	File excelFile = ExcelUtil.employeesToExcel(employees);
-    	
+    	response().setHeader("Content-disposition","attachment; filename=" + DateUtils.formatDate(new Date(), "yyyyMMdd") + ".xlsx");
     	return ok(excelFile);
     }
     

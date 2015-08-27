@@ -37,6 +37,7 @@
 					<option value="unsubmitted" @if("unsubmitted".equals(searchKey.get("submitted"))){selected}>미제출</option>
 				</select>
     			<a href="javascript:search();" class="t21"><span>조회</span></a>		
+    			<a href="javascript:excelDownload();" class="t21"><span>엑셀다운로드</span></a>		
     		</div>
     		<input type="hidden" id="sort_dateCreated" name="sort_dateCreated" value="@searchKey.getSortField.get("sort_dateCreated")">
 		}
@@ -134,6 +135,10 @@
 		
 		function search() {
 			$('#search_form').submit();
+		}
+		
+		function excelDownload() {
+			location.href = '@routes.ManagementApp.downloadExcelFile(planId)?' + $('#search_form').serialize();
 		}
 		
 		function sortDatedCreated() {

@@ -3,15 +3,19 @@ package util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jxls.common.Context;
 import org.jxls.reader.ReaderBuilder;
 import org.jxls.reader.XLSReadStatus;
 import org.jxls.reader.XLSReader;
+import org.jxls.util.JxlsHelper;
 
 import play.Play;
 import exception.DiagnosisException;
@@ -22,7 +26,7 @@ public class ExcelUtil {
 	public static List<Employee> convertToEmployees(File file) {
 		//
 		List<Employee> employees = new ArrayList<Employee>();
-		String xml = Play.application().path().getPath() + File.separatorChar + "conf" + File.separatorChar + 
+		String xml = "conf" + File.separatorChar + 
 				"jxls" + File.separatorChar + "config"+ File.separatorChar+ "employeeconfig.xml";
 		try {
 			InputStream inputXML = new BufferedInputStream(new FileInputStream(xml));
@@ -42,12 +46,11 @@ public class ExcelUtil {
 		return employees;
 	}
 
-	/*public static File employeesToExcel(List<Employee> employees) {
+	public static File employeesToExcel(List<Employee> employees) {
 		//
-		String input = Play.application().path().getPath() + File.separatorChar + "conf" + File.separatorChar + 
-				"jxls" + File.separatorChar + "template" + File.separatorChar + "object_collection_template.xls";
-		String output = Play.application().path().getPath() + File.separatorChar + "conf" + File.separatorChar + 
-				"jxls" + File.separatorChar + "template" + File.separatorChar + "target" + File.separatorChar + "template.xls";
+		String input = "conf" + File.separatorChar + 
+				"jxls" + File.separatorChar + "template" + File.separatorChar + "template_management.xlsx";
+		String output = "target/result_management.xlsx";
 		
 	    try(InputStream is = new BufferedInputStream(new FileInputStream(input))) {
 	        try (OutputStream os = new FileOutputStream(output)) {
@@ -60,7 +63,6 @@ public class ExcelUtil {
 	    } catch(Exception e) {
 	    	throw new DiagnosisException("There is an invalid template file.");
 	    }
-	    
-		
-	}*/
+	}
+	
 }

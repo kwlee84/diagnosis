@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.apache.http.client.utils.DateUtils;
+
 import play.data.validation.Constraints.Required;
 
 import com.avaje.ebean.Model;
@@ -80,5 +82,20 @@ public class Employee extends Model {
 
 	public void setTeam(String team) {
 		this.team = team;
+	}
+	
+	public String isSubmitted() {
+		//
+		if(diagnosis == null) {
+			return "X";
+		}
+		return "O";
+	}
+	
+	public String getSubmitDate() {
+		if(diagnosis == null || diagnosis.getDateCreated() == null) {
+			return null;
+		}
+		return DateUtils.formatDate(diagnosis.getDateCreated(), "yyyy-MM-dd a hh:mm");
 	}
 }
