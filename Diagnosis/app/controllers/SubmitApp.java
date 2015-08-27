@@ -48,6 +48,11 @@ public class SubmitApp extends Controller {
     	return ok(register.render(diagnosisForm, plan));
     }
     
+    public Result result() {
+    	//
+    	return ok(result.render("제출되었습니다."));
+    }
+    
     public Result register() {
     	//
     	Diagnosis diagnosis = Form.form(Diagnosis.class).bindFromRequest().get();
@@ -68,7 +73,7 @@ public class SubmitApp extends Controller {
     		}
     	}
     		
-    	return ok(result.render("제출되었습니다."));
+    	return redirect(routes.SubmitApp.result());
     }
     
     public Result edit() {
@@ -91,6 +96,6 @@ public class SubmitApp extends Controller {
     		}
     	}
     		
-    	return ok(result.render("제출되었습니다."));
+    	return redirect(routes.SubmitApp.result());
     }
 }

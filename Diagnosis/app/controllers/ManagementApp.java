@@ -26,6 +26,7 @@ import play.mvc.Security.Authenticated;
 import services.EmployeeService;
 import services.ManagementService;
 import services.PlanService;
+import util.ExcelUtil;
 import util.FileUtil;
 import util.SearchKey;
 import views.html.management.*;
@@ -68,6 +69,22 @@ public class ManagementApp extends Controller {
 		response().setHeader("Content-disposition","attachment; filename=" + zipFile.getName());
 		
 		return ok(zipFile);
+    }
+    
+    public Result downloadExcelFile(String planId) {
+    	DynamicForm bindedForm = Form.form().bindFromRequest();
+    	SearchKey searchKey = new SearchKey();
+    	searchKey.addKey(Employee.SearchCompanyId, bindedForm.get("companyId"));
+    	searchKey.addKey(Employee.SearchName, bindedForm.get("name"));
+    	searchKey.addKey(Employee.SearchTeam, bindedForm.get("team"));
+    	searchKey.addKey(Employee.SearchSubmitted, bindedForm.get("submitted"));
+    	searchKey.addSort("sort_dateCreated", bindedForm.get("sort_dateCreated"));
+    	
+    	List<Employee> employees = managementService.findEmployeeWithDiagnosis(planId, searchKey);
+    	
+    	File excelFile = ExcelUtil.employeesToExcel(employees);
+    	
+    	return ok(excelFile);
     }
     
 }
